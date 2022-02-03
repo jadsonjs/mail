@@ -8,10 +8,19 @@ group = 'br.com.jadson'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+// to lombok works with spring
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+}
+
+// to mapstruct works as spring beans
+// https://stackoverflow.com/questions/62940620/mapstruct-lombok-with-gradle-in-spring-boot-bean-not-found
+compileJava {
+	options.compilerArgs = [
+			'-Amapstruct.defaultComponentModel=spring'
+	]
 }
 
 repositories {
@@ -33,6 +42,11 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// mapstruct to convert DTO Objects in Model Objects
+	compileOnly 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'

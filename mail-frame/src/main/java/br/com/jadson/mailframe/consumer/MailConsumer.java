@@ -6,19 +6,21 @@
  */
 package br.com.jadson.mailframe.consumer;
 
-import br.com.jadson.mailframe.dtos.MailDto;
 import br.com.jadson.mailframe.models.Mail;
 import br.com.jadson.mailframe.models.MailStatus;
 import br.com.jadson.mailframe.repositories.MailRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.nio.file.Files;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
@@ -60,28 +62,41 @@ public class MailConsumer {
     @RabbitListener(queues = {"${queue.name}"})
     public void receive(@Payload Mail mail) {
 
-        System.out.println("Consuming mail....");
-
-        delay();
-
-
         mail.setSendDate(LocalDateTime.now());
         try{
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(mail.getFrom());
-            message.setTo(mail.getTo());
-            if(mail.getCc() != null)
-                message.setCc(mail.getCc());
-            if(mail.getBcc() != null)
-                message.setBcc(mail.getBcc());
+
+            MimeMessage message = mailSender.createMimeMessage();
+
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            helper.setFrom(mail.getFrom());
+            helper.setTo(mail.getTo().toArray(new String[0]));
+
+            if(mail.getCc() != null && mail.getCc().size() > 0 )
+                helper.setCc(mail.getCc().toArray(new String[0]));
+            if(mail.getBcc() != null && mail.getCc().size() > 0 )
+                helper.setBcc(mail.getBcc().toArray(new String[0]));
 
             if(mail.getReplyTo() != null || mail.getReplyTo().trim().isEmpty())
-            message.setReplyTo(noReply);
+                helper.setReplyTo(noReply);
+            else
+                helper.setReplyTo(mail.getReplyTo());
 
-            message.setSubject(mail.getSubject());
-            message.setText(mail.getText());
+            helper.setSubject(mail.getSubject());
+            helper.setText("<html><body><br><br><br><br><br><br><br>"+mail.getText()+"</body></html>");
 
-            mailSender.send(message);
+            File file = new File("/Users/jadson/Desktop/test1.txt");
+            byte[] fileContent = Files.readAllBytes(file.toPath());
+
+            File file2 = new File("/Users/jadson/Desktop/test2.txt");
+            byte[] fileContent2 = Files.readAllBytes(file.toPath());
+
+            File file3 = new File("/Users/jadson/Desktop/test3.txt");
+            byte[] fileContent3 = Files.readAllBytes(file.toPath());
+
+            helper.addAttachment("Test1.txt", new ByteArrayResource(fileContent));
+            helper.addAttachment("Test2.txt", new ByteArrayResource(fileContent2));
+            helper.addAttachment("Test3.txt", new ByteArrayResource(fileContent3));
 
             mail.setStatus(MailStatus.SENT);
         } catch (Exception e){

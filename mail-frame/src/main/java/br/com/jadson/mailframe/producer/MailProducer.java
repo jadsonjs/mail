@@ -6,12 +6,10 @@
  */
 package br.com.jadson.mailframe.producer;
 
-import br.com.jadson.mailframe.dtos.MailDto;
 import br.com.jadson.mailframe.models.Mail;
 import br.com.jadson.mailframe.models.MailStatus;
 import br.com.jadson.mailframe.repositories.MailRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
