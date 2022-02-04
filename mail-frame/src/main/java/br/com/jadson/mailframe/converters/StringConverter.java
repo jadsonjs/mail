@@ -14,16 +14,16 @@ public class StringConverter {
 
     final String DELIMITER = ";";
 
-    @Named("stringToArray")
-    private List<String> stringToArray(String to) {
+    @Named("stringToList")
+    public List<String> stringToList(String to) {
         if (to != null && to.length() > 0) {
-            Arrays.asList(to.split(DELIMITER));
+            return Arrays.asList(to.split(DELIMITER));
         }
         return Collections.emptyList();
     }
 
-    @Named("arrayToString")
-    private String arrayToString(List<String> to) {
+    @Named("listToString")
+    public String listToString(List<String> to) {
         if(to != null && to.size() > 0) {
             StringBuilder buffer = new StringBuilder();
             for (String t : to) {

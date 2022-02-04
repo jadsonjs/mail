@@ -3,8 +3,8 @@ package br.com.jadson.mailframe.dtos;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -16,14 +16,10 @@ public class MailDto {
     @Email(message = "\"From\" field is not a valid Email")
     private String from;
 
-    @NotBlank(message = "The \"to\" field must have at least one Email")
-    @Max(value = 100, message = "The \"to\" field should not be greater than 100 Email addresses")
+    @NotEmpty(message = "The \"to\" field must have at least one Email")
     private List<String> to;
 
-
-    @Max(value = 100, message = "The \"cc\" field should not be greater than 100 Email addresses")
     private List<String> cc;
-    @Max(value = 100, message = "The \"bcc\" field should not be greater than 100 Email addresses")
     private List<String> bcc;
 
     @Email(message = "\"ReplyTo\" field is not a valid Email")
@@ -37,6 +33,9 @@ public class MailDto {
     /***
      * Base 64 files to be sent in the Email
      */
-    @Max(value = 10, message = "The \"attachments\" field should not be greater than 10 files")
     private List<AttachmentDto> attachments;
+
+    @NotBlank(message = "\"Application Name\" field should not be blank")
+    private String application;
+
 }

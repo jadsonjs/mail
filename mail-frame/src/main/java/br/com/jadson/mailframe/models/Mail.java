@@ -1,14 +1,16 @@
 package br.com.jadson.mailframe.models;
 
+import br.com.jadson.mailframe.converters.StringConverter;
+import br.com.jadson.mailframe.exceptions.MailValidationException;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Data
 @Entity
@@ -19,11 +21,11 @@ public class Mail implements Serializable {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "_from")
+    @Column(name = "from_")
     private String from;
 
     /** A list of email addresses separanted by ";" */
-    @Column(name = "_to", columnDefinition = "TEXT")
+    @Column(name = "to_", columnDefinition = "TEXT")
     private String to;
 
     /** A list of email addresses separanted by ";" */
@@ -44,54 +46,87 @@ public class Mail implements Serializable {
     @Transient
     private List<Attachment> attachments;
 
+    /** The application that send this email */
+    private String applicationName;
+
     private LocalDateTime sendDate;
 
     @Column(length = 60)
     @Enumerated(EnumType.STRING)
     private MailStatus status;
 
-    public List<String> getTo() {
-        return stringToArray(to);
+    public String[] getToAsArray() {
+        return new StringConverter().stringToList(to).toArray(new String[0]);
     }
 
-    public Mail setTo(List<String> to) {
-        return arrayToString(to);
+    public String[] getCcAsArray() {
+        return new StringConverter().stringToList(cc).toArray(new String[0]);
     }
 
-    public List<String> getCc() {
-        return stringToArray(cc);
+    public String[] getBccAsArray() {
+        return new StringConverter().stringToList(bcc).toArray(new String[0]);
     }
 
-    public Mail setCc(List<String> cc) {
-        return arrayToString(cc);
-    }
+    public void validate() {
 
-    public List<String> getBcc() {
-        return stringToArray(bcc);
-    }
+        if(from == null) {
+            throw new MailValidationException("\"From\" field should not be null");
+        }else
+            validateEmailsList(from);
 
-    public Mail setBcc(List<String> bcc) {
-        return arrayToString(bcc);
-    }
+        if(to == null) {
+            throw new MailValidationException("\"To\" field should not be null");
+        }else
+            validateEmailsList(to);
+
+        if(cc != null)
+            validateEmailsList(cc);
+
+         if(bcc != null)
+             validateEmailsList(bcc);
+
+         if(replyTo != null)
+             validateEmailAddress(replyTo);
 
 
-    final String DELIMITER = ";";
+        if(applicationName == null || applicationName.isBlank())
+            throw new MailValidationException("\"Application Name\" field should not be blank");
 
-    private List<String> stringToArray(String to) {
-        if (to != null && to.length() > 0) {
-            Arrays.asList(to.split(DELIMITER));
-        }
-        return Collections.emptyList();
-    }
+        if(subject == null || subject.isBlank())
+            throw new MailValidationException("\"Subject\" field should not be blank");
 
-    private Mail arrayToString(List<String> to) {
-        if(to != null && to.size() > 0) {
-            StringBuilder buffer = new StringBuilder();
-            for (String t : to) {
-                buffer.append(t+DELIMITER);
+        if(text == null || text.isBlank())
+            throw new MailValidationException("\"Text\" field should not be blank");
+
+
+        if(attachments != null)
+            for (Attachment att :  attachments){
+                att.validate();
             }
-            this.to = buffer.toString();
-        }
-        return this;
+
+
     }
+
+    private void validateEmailsList(String s) {
+        List<String> emails = new StringConverter().stringToList(s);
+        if(emails.size() > 100)
+            throw new MailValidationException("\"To\" field should have a maximum of 100 emails");
+        for (String e : emails){
+            validateEmailAddress(e);
+        }
+    }
+
+
+    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private static Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+    private static Matcher matcher;
+
+
+    public void validateEmailAddress(final String email) {
+        matcher = pattern.matcher(email);
+        if( ! matcher.matches() )
+            throw new MailValidationException("Email address "+email+" is not valid");
+
+    }
+
 }

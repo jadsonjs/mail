@@ -9,14 +9,18 @@ import org.mapstruct.Mapping;
 @Mapper(uses = {StringConverter.class, UUIDConverter.class, AttachmentsConverter.class})
 public interface MailConverter {
 
-    @Mapping(source = "to", target = "to", qualifiedByName = { "StringConverter", "arrayToString" })
-    @Mapping(source = "cc", target = "cc", qualifiedByName = { "StringConverter", "arrayToString" })
-    @Mapping(source = "bcc", target = "bcc", qualifiedByName = { "StringConverter", "arrayToString" })
+    @Mapping(source = "application", target = "applicationName")
+    @Mapping(source = "to", target = "to", qualifiedByName = { "StringConverter", "listToString" })
+    @Mapping(source = "cc", target = "cc", qualifiedByName = { "StringConverter", "listToString" })
+    @Mapping(source = "bcc", target = "bcc", qualifiedByName = { "StringConverter", "listToString" })
+    @Mapping( target = "sendDate", ignore = true)
+    @Mapping( target = "status", ignore = true)
     Mail toModel(MailDto dto);
 
-    @Mapping(source = "to", target = "to", qualifiedByName = { "StringConverter", "stringToArray" })
-    @Mapping(source = "cc", target = "cc", qualifiedByName = { "StringConverter", "stringToArray" })
-    @Mapping(source = "bcc", target = "bcc", qualifiedByName = { "StringConverter", "stringToArray" })
+    @Mapping(source = "applicationName", target = "application")
+    @Mapping(source = "to", target = "to", qualifiedByName = { "StringConverter", "stringToList" })
+    @Mapping(source = "cc", target = "cc", qualifiedByName = { "StringConverter", "stringToList" })
+    @Mapping(source = "bcc", target = "bcc", qualifiedByName = { "StringConverter", "stringToList" })
     @InheritInverseConfiguration
     MailDto toDto(Mail dto);
 }

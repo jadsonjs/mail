@@ -9,10 +9,10 @@ import org.mapstruct.Mapping;
 @Mapper(uses = {Base64Converter.class})
 public interface AttachmentsConverter {
 
-    @Mapping(source = "attachments", target = "attachments", qualifiedByName = { "Base64Converter", "base64ToBytes" })
+    @Mapping(source = "content", target = "content", qualifiedByName = { "Base64Converter", "base64ToBytes" })
     Attachment toModel(AttachmentDto dto);
 
-    @Mapping(source = "attachments", target = "attachments", qualifiedByName = { "Base64Converter", "bytesToBase64" })
+    @Mapping(source = "content", target = "content", qualifiedByName = { "Base64Converter", "bytesToBase64" })
     @InheritInverseConfiguration
     AttachmentDto toDto(Attachment dto);
 }
