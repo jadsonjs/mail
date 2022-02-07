@@ -21,6 +21,7 @@ public interface MailConverter {
     @Mapping(source = "to", target = "to", qualifiedByName = { "StringConverter", "stringToList" })
     @Mapping(source = "cc", target = "cc", qualifiedByName = { "StringConverter", "stringToList" })
     @Mapping(source = "bcc", target = "bcc", qualifiedByName = { "StringConverter", "stringToList" })
+    @Mapping( target = "to_", ignore = true)
     @InheritInverseConfiguration
     MailDto toDto(Mail dto);
 }

@@ -44,13 +44,13 @@ public class MailDto {
 
     public MailDto(String from, String to, String subject, String text, String application) {
         setFrom(from);
-        setTo(to);
+        setTo_(to);
         setSubject(subject);
         setText(text);
         setApplication(application);
     }
 
-    public void setTo(String s) {
+    public void setTo_(String s) {
         to = new ArrayList<>();
         to.add(s);
     }

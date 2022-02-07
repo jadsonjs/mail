@@ -5,6 +5,8 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -37,5 +39,21 @@ public class MailDto {
 
     @NotBlank(message = "\"Application Name\" field should not be blank")
     private String application;
+
+    public MailDto() {
+    }
+
+    public MailDto(String from, String to, String subject, String text, String application) {
+        setFrom(from);
+        setTo_(to);
+        setSubject(subject);
+        setText(text);
+        setApplication(application);
+    }
+
+    public void setTo_(String s) {
+        to = new ArrayList<>();
+        to.add(s);
+    }
 
 }
