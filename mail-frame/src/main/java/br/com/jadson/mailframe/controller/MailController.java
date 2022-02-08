@@ -41,7 +41,6 @@ public class MailController {
     public ResponseEntity<MailDto> send(@Valid @RequestBody MailDto dto) {
         try {
             Mail mail = converter.toModel(dto);
-            mail.validate();
             mail = producer.sendToQueue(mail);
             return new ResponseEntity<>(converter.toDto(mail), HttpStatus.CREATED);
         }catch (Exception ex){

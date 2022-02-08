@@ -41,6 +41,8 @@ public class MailProducer {
 
         try {
 
+            mail.validate();
+
             mail.setStatus(MailStatus.PROCESSING);
             mail = mailRepository.save(mail);
 

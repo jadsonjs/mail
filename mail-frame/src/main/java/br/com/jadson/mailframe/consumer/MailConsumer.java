@@ -153,7 +153,7 @@ public class MailConsumer {
 
         } catch (Exception e){
             mail.setStatus(MailStatus.ERROR);
-            mail.setError(e.getMessage().length() < 256 ? e.getMessage() : e.getMessage().substring(0, 256) );
+            mail.setError(e.getMessage() == null || e.getMessage().length() < 256 ? e.getMessage() : e.getMessage().substring(0, 256) );
         } finally {
             mailRepository.save(mail);
         }
