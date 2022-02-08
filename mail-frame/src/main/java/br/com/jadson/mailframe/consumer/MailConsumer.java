@@ -15,7 +15,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -61,7 +60,9 @@ public class MailConsumer {
     String noReply;
     
 
-//    // Exemple using SimpleMailMessage class
+//    /**
+//     * Exemple using SimpleMailMessage class
+//     */
 //    @RabbitListener(queues = {"${queue.name}"})
 //    public void receive(@Payload Mail mail) {
 //
@@ -97,6 +98,11 @@ public class MailConsumer {
 //        }
 //    }
 
+
+    /***
+     * send HTML emails
+     * @param mail
+     */
     @RabbitListener(queues = {"${queue.name}"})
     public void receive(@Payload Mail mail) {
 
@@ -147,6 +153,7 @@ public class MailConsumer {
 
         } catch (Exception e){
             mail.setStatus(MailStatus.ERROR);
+            mail.setError(e.getMessage().length() < 256 ? e.getMessage() : e.getMessage().substring(0, 256) );
         } finally {
             mailRepository.save(mail);
         }

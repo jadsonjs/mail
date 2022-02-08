@@ -6,6 +6,7 @@
  */
 package br.com.jadson.mailframe.producer;
 
+import br.com.jadson.mailframe.exceptions.MailValidationException;
 import br.com.jadson.mailframe.models.Mail;
 import br.com.jadson.mailframe.models.MailStatus;
 import br.com.jadson.mailframe.repositories.MailRepository;
@@ -50,7 +51,7 @@ public class MailProducer {
         } catch (Exception e){
             e.printStackTrace();
             mailRepository.delete(mail);
-            throw new RuntimeException("Could not sent mail: "+e.getMessage());
+            throw new MailValidationException("Could not sent mail: "+e.getMessage());
         }
     }
 

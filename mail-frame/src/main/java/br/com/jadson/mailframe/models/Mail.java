@@ -55,6 +55,12 @@ public class Mail implements Serializable {
     @Enumerated(EnumType.STRING)
     private MailStatus status;
 
+    /**
+     * When something goes wrong, save the error
+     */
+    @Column
+    private String error;
+
     public String[] getToAsArray() {
         return new StringConverter().stringToList(to).toArray(new String[0]);
     }

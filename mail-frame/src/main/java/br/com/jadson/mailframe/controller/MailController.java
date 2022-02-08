@@ -6,8 +6,8 @@
  */
 package br.com.jadson.mailframe.controller;
 
+import br.com.jadson.mailframe.client.dto.MailDto;
 import br.com.jadson.mailframe.converters.MailConverter;
-import br.com.jadson.mailframe.dtos.MailDto;
 import br.com.jadson.mailframe.models.Mail;
 import br.com.jadson.mailframe.producer.MailProducer;
 import org.springframework.beans.factory.annotation.Autowired;

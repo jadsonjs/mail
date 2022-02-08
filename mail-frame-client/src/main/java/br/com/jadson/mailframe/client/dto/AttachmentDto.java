@@ -14,4 +14,11 @@ public class AttachmentDto {
      */
     private String content;
 
+    public AttachmentDto() {
+    }
+
+    public AttachmentDto(String name, String content) {
+        this.name = name;
+        this.content = content;
+    }
 }

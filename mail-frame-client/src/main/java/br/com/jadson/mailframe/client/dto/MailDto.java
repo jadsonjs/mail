@@ -5,7 +5,12 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Data
@@ -42,17 +47,14 @@ public class MailDto {
     public MailDto() {
     }
 
-    public MailDto(String from, String to, String subject, String text, String application) {
+    public MailDto(String from, List<String> to, String subject, String text, String application) {
         setFrom(from);
-        setTo_(to);
+        setTo(to);
         setSubject(subject);
         setText(text);
         setApplication(application);
     }
 
-    public void setTo_(String s) {
-        to = new ArrayList<>();
-        to.add(s);
-    }
+
 
 }

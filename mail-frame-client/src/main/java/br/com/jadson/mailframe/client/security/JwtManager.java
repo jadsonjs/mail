@@ -4,19 +4,21 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+@Component
 public class JwtManager {
 
-    @Value("${jwt.secret}")
+    @Value("${mail.jwt.secret}")
     private String secret;
 
-    private int expirationTime = 86400000;
+    private int expirationTime = 5*60*1000;
 
-    public String generate() {
+    public String generateKey() {
         return Jwts.builder()
                 .setSubject("mail.client")
                 .setIssuedAt(new Date())

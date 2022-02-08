@@ -1,6 +1,8 @@
 package br.com.jadson.mailframe.client;
 
 import br.com.jadson.mailframe.client.dto.MailDto;
+import br.com.jadson.mailframe.client.security.JwtManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -12,8 +14,8 @@ public class MailClient {
     @Value("${mail.service.url}")
     String url;
 
-    @Value("${mail.jwt.key}")
-    String jwtKey;
+    @Autowired
+    JwtManager jwt;
 
     public MailDto send(MailDto mailDto) {
 
@@ -39,7 +41,7 @@ public class MailClient {
     private HttpHeaders genarateHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "key");
+        headers.add("Authorization", "Bearer "+jwt.generateKey());
         return headers;
     }
 }
