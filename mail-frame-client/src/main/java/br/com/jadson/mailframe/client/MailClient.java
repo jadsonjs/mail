@@ -1,6 +1,6 @@
 package br.com.jadson.mailframe.client;
 
-import br.com.jadson.mailframe.client.dto.MailDto;
+import br.com.jadson.mailframe.client.dtos.MailDto;
 import br.com.jadson.mailframe.client.security.JwtManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -51,9 +51,9 @@ public class MailProducer {
             return mail;
 
         } catch (Exception e){
-            e.printStackTrace();
+            // e.printStackTrace();
             mailRepository.delete(mail);
-            throw new MailValidationException("Could not sent mail: "+e.getMessage());
+            throw new MailValidationException(e.getMessage());
         }
     }
 

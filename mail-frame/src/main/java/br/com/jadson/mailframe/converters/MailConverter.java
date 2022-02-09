@@ -1,6 +1,6 @@
 package br.com.jadson.mailframe.converters;
 
-import br.com.jadson.mailframe.client.dto.MailDto;
+import br.com.jadson.mailframe.client.dtos.MailDto;
 import br.com.jadson.mailframe.models.Mail;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;

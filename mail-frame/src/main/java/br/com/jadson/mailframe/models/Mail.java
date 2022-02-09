@@ -76,33 +76,33 @@ public class Mail implements Serializable {
     public void validate() {
 
         if(from == null) {
-            throw new MailValidationException("\"From\" field should not be null");
+            throw new MailValidationException("from: field should not be null");
         }else
-            validateEmailsList(from);
+            validateEmailsList("from", from);
 
         if(to == null) {
-            throw new MailValidationException("\"To\" field should not be null");
+            throw new MailValidationException("to: field should not be null");
         }else
-            validateEmailsList(to);
+            validateEmailsList("to", to);
 
         if(cc != null)
-            validateEmailsList(cc);
+            validateEmailsList("cc", cc);
 
          if(bcc != null)
-             validateEmailsList(bcc);
+             validateEmailsList("bcc", bcc);
 
          if(replyTo != null)
-             validateEmailAddress(replyTo);
+             validateEmailAddress("replyTo", replyTo);
 
 
         if(applicationName == null || applicationName.isBlank())
-            throw new MailValidationException("\"Application Name\" field should not be blank");
+            throw new MailValidationException("application: field should not be blank");
 
         if(subject == null || subject.isBlank())
-            throw new MailValidationException("\"Subject\" field should not be blank");
+            throw new MailValidationException("subject: field should not be blank");
 
         if(text == null || text.isBlank())
-            throw new MailValidationException("\"Text\" field should not be blank");
+            throw new MailValidationException("text: field should not be blank");
 
 
         if(attachments != null)
@@ -113,12 +113,12 @@ public class Mail implements Serializable {
 
     }
 
-    private void validateEmailsList(String s) {
-        List<String> emails = new StringConverter().stringToList(s);
+    private void validateEmailsList(String name, String value) {
+        List<String> emails = new StringConverter().stringToList(value);
         if(emails.size() > 100)
-            throw new MailValidationException("\"To\" field should have a maximum of 100 emails");
+            throw new MailValidationException(name+": field should have a maximum of 100 emails");
         for (String e : emails){
-            validateEmailAddress(e);
+            validateEmailAddress(name, e);
         }
     }
 
@@ -128,10 +128,10 @@ public class Mail implements Serializable {
     private static Matcher matcher;
 
 
-    public void validateEmailAddress(final String email) {
+    public void validateEmailAddress(final String name, final String email) {
         matcher = pattern.matcher(email);
         if( ! matcher.matches() )
-            throw new MailValidationException("Email address "+email+" is not valid");
+            throw new MailValidationException(name+": "+"\""+email+"\" is not valid Email");
 
     }
 

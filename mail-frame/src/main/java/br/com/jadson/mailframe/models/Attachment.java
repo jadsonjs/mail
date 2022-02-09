@@ -16,9 +16,9 @@ public class Attachment {
 
     public void validate() {
         if(name == null || name.isBlank())
-            throw new MailValidationException("\"Attachment Name\" field should not be blank");
+            throw new MailValidationException("Attachment Name: field should not be blank");
 
         if(content == null || content.length == 0)
-            throw new MailValidationException("\"Attachment Content\" field should not be blank");
+            throw new MailValidationException("Attachment Content: field should not be blank");
     }
 }

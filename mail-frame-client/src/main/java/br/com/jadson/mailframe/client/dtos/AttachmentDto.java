@@ -1,4 +1,4 @@
-package br.com.jadson.mailframe.client.dto;
+package br.com.jadson.mailframe.client.dtos;
 
 import lombok.Data;
 

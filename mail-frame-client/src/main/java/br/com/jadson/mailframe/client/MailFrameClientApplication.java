@@ -1,5 +1,6 @@
 package br.com.jadson.mailframe.client;
 
+import br.com.jadson.mailframe.client.security.JwtManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,6 +14,7 @@ public class MailFrameClientApplication implements CommandLineRunner {
 
 	@Autowired
 	MailClient client;
+	
 
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(MailFrameClientApplication.class);
@@ -28,7 +30,7 @@ public class MailFrameClientApplication implements CommandLineRunner {
 		File f2 = new File("/Users/jadson/Desktop/comprovante.pdf");
 
 
-		client.send(new MailDtoBuilder("jadsonjs@gmail.com", "jadson.santos@ufrn.br",
+		client.send(new MailDtoBuilder("jadsonjs_gmail.com", "jadson.santos@ufrn.br",
 				"Test by Client", " <p> <b>This is a test </b> </p>"+
 				" <br><br>"+
 				" <p> <i>This is the body</i> </p>", "mail-client")
@@ -36,8 +38,7 @@ public class MailFrameClientApplication implements CommandLineRunner {
 				.addFile("comprovante2.pdf", f2)
 				.build());
 
-
-		System.out.println("Mail sent");
+		System.out.println("Mail was sent");
 
 	}
 }

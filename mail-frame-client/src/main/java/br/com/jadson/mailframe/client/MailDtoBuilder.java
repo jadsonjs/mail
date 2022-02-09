@@ -1,7 +1,7 @@
 package br.com.jadson.mailframe.client;
 
-import br.com.jadson.mailframe.client.dto.AttachmentDto;
-import br.com.jadson.mailframe.client.dto.MailDto;
+import br.com.jadson.mailframe.client.dtos.AttachmentDto;
+import br.com.jadson.mailframe.client.dtos.MailDto;
 
 import java.io.File;
 import java.io.IOException;

@@ -6,8 +6,9 @@
  */
 package br.com.jadson.mailframe.controller;
 
-import br.com.jadson.mailframe.client.dto.MailDto;
+import br.com.jadson.mailframe.client.dtos.MailDto;
 import br.com.jadson.mailframe.converters.MailConverter;
+import br.com.jadson.mailframe.exceptions.MailValidationException;
 import br.com.jadson.mailframe.models.Mail;
 import br.com.jadson.mailframe.producer.MailProducer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +40,9 @@ public class MailController {
      */
     @PostMapping("/send")
     public ResponseEntity<MailDto> send(@Valid @RequestBody MailDto dto) {
-        try {
-            Mail mail = converter.toModel(dto);
-            mail = producer.sendToQueue(mail);
-            return new ResponseEntity<>(converter.toDto(mail), HttpStatus.CREATED);
-        }catch (Exception ex){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Mail mail = converter.toModel(dto);
+        mail = producer.sendToQueue(mail);
+        return new ResponseEntity<>(converter.toDto(mail), HttpStatus.CREATED);
     }
 }
 

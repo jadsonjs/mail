@@ -30,10 +30,10 @@ import java.time.LocalDateTime;
  * Receive mail data from RabbitMQ Queue and sent it
  *
  * On the technical side:
- * if you can choose your SMTP server, be sure it is a “clean” SMTP server.
- * IP addresses of spamming SMTP servers are often blacklisted by other providers.
- * If you don’t know your SMTP servers in advance, it’s a good practice to provide configuration
- * options in your application for controlling batch sizes and delay between batches.
+ * - if you can choose your SMTP server, be sure it is a “clean” SMTP server.
+ * - IP addresses of spamming SMTP servers are often blacklisted by other providers.
+ * - If you don’t know your SMTP servers in advance, it’s a good practice to provide configuration
+ * - Options in your application for controlling batch sizes and delay between batches.
  * Some mail servers don’t accept large sending batches or continuous activity.
  *
  * Use email authentication methods, such as SPF, and DKIM to prove that your emails and your domain name belong together.
