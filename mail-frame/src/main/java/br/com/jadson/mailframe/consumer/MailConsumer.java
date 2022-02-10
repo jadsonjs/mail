@@ -8,6 +8,7 @@ package br.com.jadson.mailframe.consumer;
 
 import br.com.jadson.mailframe.models.Attachment;
 import br.com.jadson.mailframe.models.Mail;
+import br.com.jadson.mailframe.models.MailCounter;
 import br.com.jadson.mailframe.models.MailStatus;
 import br.com.jadson.mailframe.repositories.MailRepository;
 import br.com.jadson.mailframe.util.MailUtil;
@@ -29,20 +30,20 @@ import java.time.LocalDateTime;
  *
  * Receive mail data from RabbitMQ Queue and sent it
  *
- * On the technical side:
- * - if you can choose your SMTP server, be sure it is a “clean” SMTP server.
- * - IP addresses of spamming SMTP servers are often blacklisted by other providers.
- * - If you don’t know your SMTP servers in advance, it’s a good practice to provide configuration
- * - Options in your application for controlling batch sizes and delay between batches.
- * Some mail servers don’t accept large sending batches or continuous activity.
+ * https://stackoverflow.com/questions/120107/guidelines-for-email-newsletter-service
  *
- * Use email authentication methods, such as SPF, and DKIM to prove that your emails and your domain name belong together.
- * The nice side-effect is you help in preventing that your email domain is spoofed. Also check your reverse DNS
- * to make sure the IP address of your mail server points to the domain name that you use for sending mail.
+ *  - Choose a clean hosting/smtp server. IP addresses of spamming SMTP servers are often black-listed by other ISPs.
  *
- * https://stackoverflow.com/questions/13833098/how-to-sign-javamail-with-dkim
+ *  - Send a simple introductory email to every subscriber, asking them to add your sender address to their safe list.
  *
- * @author Jadson Santos - jadson.santos@ufrn.br
+ *  - Be very prudent in sending to only those people who are actually expecting it. You wouldn't want pattern
+ *  recognizers of spam filters learning the smell of your content.
+ *
+ *  - If you don't know your smtp servers in advance, its a good practice to provide configuration options in your
+ *  application for controlling batch sizes and delay between batches. Some servers don't like large batches or
+ *  continuous activity.
+ *
+ * @author Jadson Santos - jadsonjs@gmail.com
  */
 @Component
 public class MailConsumer {
@@ -56,8 +57,11 @@ public class MailConsumer {
     @Autowired
     MailUtil mailUtil;
 
-    @Value("${mail.noreply}")
+    @Value("${mail.noreply.address}")
     String noReply;
+
+    @Autowired
+    MailCounter mailCounter;
     
 
 //    /**
@@ -103,10 +107,8 @@ public class MailConsumer {
      * send HTML emails
      * @param mail
      */
-    @RabbitListener(queues = {"${queue.name}"})
+    @RabbitListener(queues = {"${rabbitmq.queue.name}"})
     public void receive(@Payload Mail mail) {
-
-        delay();
 
         mail.setSendDate(LocalDateTime.now());
         try{
@@ -114,6 +116,10 @@ public class MailConsumer {
             MimeMessage message = mailSender.createMimeMessage();
 
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            if(mail.getFrom() == null || mail.getFrom().trim().isEmpty()) {
+                mail.setFrom(noReply);
+            }
 
             helper.setFrom(mail.getFrom());
             helper.setTo(mail.getToAsArray());
@@ -125,12 +131,13 @@ public class MailConsumer {
 
             boolean isNoReply = false;
             if(mail.getReplyTo() == null || mail.getReplyTo().trim().isEmpty()) {
-                helper.setReplyTo(noReply);
+                mail.setReplyTo(noReply);
                 isNoReply = true;
             }else{
-                helper.setReplyTo(mail.getReplyTo());
                 isNoReply = false;
             }
+
+            helper.setReplyTo(mail.getReplyTo());
 
             helper.setSubject( ( "["+mail.getApplicationName()+"] "+mail.getSubject() ) );
 
@@ -156,6 +163,7 @@ public class MailConsumer {
             mail.setError(e.getMessage() == null || e.getMessage().length() < 256 ? e.getMessage() : e.getMessage().substring(0, 256) );
         } finally {
             mailRepository.save(mail);
+            delay();
         }
     }
 
@@ -166,17 +174,17 @@ public class MailConsumer {
      * *** options in your application for controlling batch sizes and delay between batches ***
      */
     private void delay() {
-        SecureRandom r = new SecureRandom();
-        int low = 1;
-        int high = 10;
-        int delaytime = r.nextInt(high-low) + low;
-        System.out.println("delay :"+delaytime+" seconds");
-        try{ Thread.sleep(delaytime * 1000);} catch (Exception e){}
 
-        int QTY_SENT_MAIL_LAST_HOUR = 10;
+        // batch size of 100 mails, so sleep 5 minutes
+        if(mailCounter.getCounter() % 100 == 0) {
+            try {Thread.sleep(5 * 60 * 1000);} catch (Exception e) { }
+        }else{
+            SecureRandom r = new SecureRandom();
+            float delay = r.nextFloat();
+            try{ Thread.sleep( (int) (delay * 1000)  ); } catch (Exception e){}
+        }
 
-        if(QTY_SENT_MAIL_LAST_HOUR > 100)
-            try{ Thread.sleep(5 * 60 * 1000);} catch (Exception e){}
+        mailCounter.incrementCounter();
     }
 
 

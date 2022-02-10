@@ -29,6 +29,33 @@ public class MailDtoBuilder {
     /**
      * Minimum constructor
      *
+     * Build an anonymous email, the "form" field will be replaced by "noReply"
+     *
+     * @param to
+     * @param subject
+     * @param text
+     * @param application
+     */
+    public MailDtoBuilder(String to, String subject, String text, String application) {
+        this(null, Arrays.asList(new String[]{to}), null, null, null, subject, text, application);
+    }
+
+    /**
+     * Minimum constructor
+     *
+     * Build an anonymous email, the "form" field will be replaced by "noReply"
+     *
+     * @param to
+     * @param subject
+     * @param text
+     * @param application
+     */
+    public MailDtoBuilder(List<String> to, String subject, String text, String application) {
+        this(null, to, null, null, null, subject, text, application);
+    }
+
+    /**
+     *
      * @param from
      * @param to
      * @param subject
@@ -40,7 +67,7 @@ public class MailDtoBuilder {
     }
 
     /**
-     * Minimum constructor
+     *
      * @param from
      * @param to
      * @param subject
@@ -74,30 +101,49 @@ public class MailDtoBuilder {
         this.application = application;
     }
 
-    private MailDtoBuilder setTo(String s) {
-        to = new ArrayList<>();
+    public MailDtoBuilder setFrom(String s) {
+        from = s;
+        return this;
+    }
+
+    public MailDtoBuilder addTo(String s) {
+        if(to == null)
+            to = new ArrayList<>();
         to.add(s);
         return this;
     }
 
+
     public MailDtoBuilder addCc(String cc) {
-        this.cc = new ArrayList<>();
+        if(cc == null || cc.trim().isBlank())
+            throw new IllegalArgumentException("bcc: should have at least one mail");
+
+        if(this.cc == null)
+            this.cc = new ArrayList<>();
         this.cc.add(cc);
         return this;
     }
 
     public MailDtoBuilder addBcc(String bcc) {
-        this.bcc = new ArrayList<>();
+        if(bcc == null || bcc.trim().isBlank())
+            throw new IllegalArgumentException("bcc: should have at least one mail");
+
+        if(this.bcc == null)
+            this.bcc = new ArrayList<>();
         this.bcc.add(bcc);
         return this;
     }
 
     public MailDtoBuilder setCc(List<String> cc) {
+        if(cc == null || cc.size() == 0)
+            throw new IllegalArgumentException("cc: should have at least one mail");
         this.cc = cc;
         return this;
     }
 
     public MailDtoBuilder setBcc(List<String> bcc) {
+        if(bcc == null || bcc.size() == 0)
+            throw new IllegalArgumentException("bcc: should have at least one mail");
         this.bcc = bcc;
         return this;
     }
@@ -113,11 +159,16 @@ public class MailDtoBuilder {
         return this;
     }
 
+    public MailDtoBuilder setReplyTO(String s) {
+        replyTo = s;
+        return this;
+    }
+
     public MailDtoBuilder addFile(String fileName, File file) {
         try {
             this.addFile(fileName, Files.readAllBytes(file.toPath()) );
         } catch (IOException e) {
-            throw  new RuntimeException(e.getMessage());
+            throw  new IllegalArgumentException(e.getMessage());
         }
         return this;
     }
@@ -126,7 +177,7 @@ public class MailDtoBuilder {
         try {
             this.addFile(fileName, ins.readAllBytes() );
         } catch (IOException e) {
-            throw  new RuntimeException(e.getMessage());
+            throw  new IllegalArgumentException(e.getMessage());
         }
         return this;
     }
@@ -138,7 +189,7 @@ public class MailDtoBuilder {
             dto.setCc(cc);
 
         if(bcc != null && bcc.size() > 0)
-            dto.setCc(bcc);
+            dto.setBcc(bcc);
 
         if(replyTo != null && ! replyTo.isBlank())
             dto.setReplyTo(replyTo);

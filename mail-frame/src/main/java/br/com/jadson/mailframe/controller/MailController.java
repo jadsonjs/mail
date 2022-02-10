@@ -8,7 +8,6 @@ package br.com.jadson.mailframe.controller;
 
 import br.com.jadson.mailframe.client.dtos.MailDto;
 import br.com.jadson.mailframe.converters.MailConverter;
-import br.com.jadson.mailframe.exceptions.MailValidationException;
 import br.com.jadson.mailframe.models.Mail;
 import br.com.jadson.mailframe.producer.MailProducer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ import javax.validation.Valid;
 /**
  * A controller to receive the mail data.
  *
- * @author Jadson Santos - jadson.santos@ufrn.br
+ * @author Jadson Santos - jadsonjs@gmail.com
  */
 @RestController
 public class MailController {

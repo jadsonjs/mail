@@ -75,13 +75,11 @@ public class Mail implements Serializable {
 
     public void validate() {
 
-        if(from == null) {
-            throw new MailValidationException("from: field should not be null");
-        }else
+        if(from != null)
             validateEmailsList("from", from);
 
-        if(to == null) {
-            throw new MailValidationException("to: field should not be null");
+        if(to == null || to.isBlank()) {
+            throw new MailValidationException("to: field should not be blank");
         }else
             validateEmailsList("to", to);
 
@@ -109,8 +107,6 @@ public class Mail implements Serializable {
             for (Attachment att :  attachments){
                 att.validate();
             }
-
-
     }
 
     private void validateEmailsList(String name, String value) {

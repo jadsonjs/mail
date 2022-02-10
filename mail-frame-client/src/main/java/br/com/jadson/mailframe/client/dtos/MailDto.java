@@ -12,7 +12,6 @@ public class MailDto {
 
     private String id;
 
-    @NotBlank
     @Email(message = "field is not a valid Email")
     private String from;
 
@@ -41,6 +40,7 @@ public class MailDto {
     public MailDto() {
     }
 
+
     public MailDto(String from, List<String> to, String subject, String text, String application) {
         setFrom(from);
         setTo(to);
@@ -48,7 +48,6 @@ public class MailDto {
         setText(text);
         setApplication(application);
     }
-
 
 
 }
