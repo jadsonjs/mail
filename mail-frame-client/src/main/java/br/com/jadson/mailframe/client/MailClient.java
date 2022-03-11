@@ -26,7 +26,9 @@ public class MailClient {
         HttpEntity<MailDto> entity = new HttpEntity<>(mailDto, genarateHeaders());
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<MailDto> response = restTemplate.exchange( url+"/send", HttpMethod.POST, entity, MailDto.class);
+        String rabbitmqEndpoint = "/send/mq";
+        String kafkaEndpoint = "/send/kafka";
+        ResponseEntity<MailDto> response = restTemplate.exchange( url+kafkaEndpoint, HttpMethod.POST, entity, MailDto.class);
         if(response.getStatusCode() == HttpStatus.CREATED ) {
             return response.getBody();
         }

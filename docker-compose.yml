@@ -1,0 +1,26 @@
+
+#
+# docker compose file to configure apache kafka and zoomkeeper
+# https://betterdatascience.com/how-to-install-apache-kafka-using-docker-the-easy-way/
+#
+# docker-compose up -d
+#
+version: "3"
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+      
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181

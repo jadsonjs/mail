@@ -39,6 +39,15 @@ dependencies {
 	 */
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
+	/**
+	 * Publish, subscribe, store, and process streams of records.
+	 */
+	implementation 'org.springframework.kafka:spring-kafka'
+	/**
+	 * used by kafka to serialize and serialize objects
+	 */
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.1'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -57,6 +66,7 @@ dependencies {
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
 }
 
 tasks.named('test') {
